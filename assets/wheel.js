@@ -222,7 +222,7 @@
 			ctx.translate(lx, ly);
 			ctx.rotate(mid + Math.PI / 2);
 			ctx.fillStyle = '#fff'; // Màu trắng
-			ctx.font = 'bold 14px system-ui, sans-serif'; // Font phù hợp với canvas 500x500
+			ctx.font = 'bold 14px system-ui, sans-serif';
 			ctx.textAlign = 'center';
 			// Text shadow để dễ đọc trên nền tối
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
@@ -239,12 +239,11 @@
 		ctx.save();
 		ctx.beginPath();
 		ctx.arc(cx, cy, centerRadius, 0, 2 * Math.PI);
-		ctx.fillStyle = '#14532d'; // Dark green
+		ctx.fillStyle = '#14532d';
 		ctx.fill();
 		ctx.strokeStyle = '#fff';
 		ctx.lineWidth = 4;
 		ctx.stroke();
-		// Text "QUAY" - font phù hợp với canvas 500x500
 		ctx.fillStyle = '#fff';
 		ctx.font = 'bold 24px system-ui, sans-serif';
 		ctx.textAlign = 'center';
@@ -276,7 +275,7 @@
 			ctx.fill();
 			
 			// Vẽ lát được chọn với màu đỏ sáng
-			ctx.fillStyle = '#ef4444'; // Đỏ sáng
+			ctx.fillStyle = '#ef4444';
 			ctx.beginPath();
 			ctx.moveTo(cx, cy);
 			ctx.arc(cx, cy, r, startSel, endSel);
@@ -284,29 +283,28 @@
 			ctx.fill();
 			
 			// Border vàng sáng rất đậm cho lát được chọn
-			ctx.lineWidth = 8; // Border dày
-			ctx.strokeStyle = '#fbbf24'; // Vàng sáng
+			ctx.lineWidth = 8;
+			ctx.strokeStyle = '#fbbf24';
 			ctx.shadowColor = '#fbbf24';
-			ctx.shadowBlur = 25; // Shadow mạnh
+			ctx.shadowBlur = 25;
 			ctx.stroke();
 			ctx.shadowBlur = 0;
 			ctx.restore();
 
-			// Vẽ lại nhãn với text lớn hơn - điều chỉnh cho canvas lớn
+			// Vẽ lại nhãn với text lớn hơn
 			const selMid = (startSel + endSel) / 2;
-			const textRadius = r * 0.70; // Cùng radius với text thường
+			const textRadius = r * 0.70;
 			const tx = cx + textRadius * Math.cos(selMid);
 			const ty = cy + textRadius * Math.sin(selMid);
 			ctx.save();
 			ctx.translate(tx, ty);
 			ctx.rotate(selMid + Math.PI / 2);
-			// Text shadow đậm
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
 			ctx.shadowBlur = 8;
 			ctx.shadowOffsetX = 3;
 			ctx.shadowOffsetY = 3;
 			ctx.fillStyle = '#fff';
-			ctx.font = 'bold 16px system-ui, sans-serif'; // Font phù hợp với canvas 500x500
+			ctx.font = 'bold 16px system-ui, sans-serif';
 			ctx.textAlign = 'center';
 			ctx.fillText(slots[selectedIndex].label, 0, 0);
 			ctx.shadowBlur = 0;
@@ -316,12 +314,10 @@
 		// Con trỏ đỏ đậm với border trắng ở 12h
 		ctx.save();
 		ctx.translate(cx, cy);
-		// Shadow mạnh cho con trỏ
 		ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
 		ctx.shadowBlur = 15;
 		ctx.shadowOffsetX = 0;
 		ctx.shadowOffsetY = 8;
-		// Màu đỏ đậm
 		ctx.fillStyle = '#dc2626';
 		ctx.beginPath();
 		ctx.moveTo(0, -(r + 10));
@@ -330,17 +326,14 @@
 		ctx.closePath();
 		ctx.fill();
 		ctx.shadowBlur = 0;
-		// Border trắng đậm cho con trỏ
 		ctx.strokeStyle = '#fff';
 		ctx.lineWidth = 4;
 		ctx.stroke();
-		sctx.restore();
+		ctx.restore();
 	}
 
 	function getSelectedIndex(currentAngle) {
-		// Góc con trỏ (12h) trong hệ toạ độ toàn cục
 		const pointerAngle = -Math.PI / 2;
-		// Góc của bánh xe ngược chiều (đưa về frame của lát cắt)
 		const rel = normalizeAngle(pointerAngle - currentAngle);
 		const sliceAngle = (2 * Math.PI) / SLICES;
 		const idx = Math.floor(rel / sliceAngle);
@@ -361,31 +354,27 @@
 	}
 
 	function getTargetAngleForIndex(index) {
-		// Con trỏ ở hướng 12h; muốn index dừng tại con trỏ
 		const sliceAngle = (2 * Math.PI) / SLICES;
-		// Tâm của lát index khi bánh xe quay là: centerAngle = currentAngle + index * sliceAngle + sliceAngle/2
-		// Ta muốn centerAngle ≡ -90deg (12h) => targetAngle để quay thêm
-		const pointerAngle = -Math.PI / 2; // 12h
+		const pointerAngle = -Math.PI / 2;
 		const target = pointerAngle - (index * sliceAngle + sliceAngle / 2);
 		return target;
 	}
 
 	function animateToIndex(index) {
 		return new Promise((resolve) => {
-			const fullSpins = 6; // Giảm số vòng quay để nhanh hơn
+			const fullSpins = 6;
 			const sliceAngle = (2 * Math.PI) / SLICES;
 			const target = getTargetAngleForIndex(index) + fullSpins * 2 * Math.PI;
 			let start = angle;
 			let delta = normalizeAngle(target - start);
 			let t = 0;
-			const duration = 3000; // ms - Giảm thời gian quay xuống 3 giây
+			const duration = 3000;
 			const startTime = performance.now();
 			
-			// Phát âm thanh quay liên tục
 			if (soundEnabled && audioContext) {
 				spinSoundInterval = setInterval(() => {
 					playSpinSound();
-				}, 100); // Phát mỗi 100ms
+				}, 100);
 			}
 
 			function easeOutCubic(x) {
@@ -400,7 +389,6 @@
 				if (t < 1) {
 					requestAnimationFrame(frame);
 				} else {
-					// Dừng âm thanh quay
 					if (spinSoundInterval) {
 						clearInterval(spinSoundInterval);
 						spinSoundInterval = null;
@@ -419,7 +407,6 @@
 
 	async function onSpin() {
 		if (spinning) return;
-		// Khởi tạo AudioContext khi user click (yêu cầu của browser)
 		initAudioOnInteraction();
 		spinning = true;
 		btn.disabled = true;
@@ -432,7 +419,6 @@
 			}
 			await animateToIndex(idx);
 			resultEl.textContent = 'Kết quả: ' + slots[idx].label;
-			// Confetti, âm thanh trúng và hiển thị modal
 			fireConfettiBurst();
 			playWinSound();
 			showWinModal(slots[idx].label);
@@ -460,7 +446,6 @@
 
 	if (btn) btn.addEventListener('click', onSpin);
 
-	// Click vào nút QUAY ở giữa bánh xe
 	if (canvas) {
 		canvas.addEventListener('click', function(e) {
 			if (spinning) return;
@@ -481,21 +466,17 @@
 		canvas.style.cursor = 'pointer';
 	}
 
-	// Vẽ lần đầu
 	drawWheel(angle);
 
-	// Expose for tests
 	window.__ALW__ = {
 		slots,
 		weightedDrawIndex,
 		onSpin,
 	};
 
-	// --------- Pháo Hoa Rơi Từ Trên Xuống Nhẹ Nhàng ---------
 	function fireConfettiBurst() {
 		if (!fullscreenConfettiCtx || !fullscreenConfettiCanvas) return;
 		
-		// Set canvas size to fullscreen
 		fullscreenConfettiCanvas.width = window.innerWidth;
 		fullscreenConfettiCanvas.height = window.innerHeight;
 		
@@ -504,18 +485,17 @@
 		const colors = ['#e11d48', '#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444', '#ec4899', '#10b981', '#06b6d4', '#fbbf24', '#a78bfa', '#f43f5e'];
 		
 		const particles = [];
-		const count = 150; // Giảm số lượng particles xuống 150
+		const count = 150;
 		
-		// Tạo particles rơi từ trên xuống, phân bố đều trên chiều rộng màn hình
 		for (let i = 0; i < count; i++) {
 			particles.push({
-				x: Math.random() * w, // Phân bố đều trên chiều rộng
-				y: -20 - Math.random() * 100, // Bắt đầu từ trên màn hình (âm)
-				vx: (Math.random() - 0.5) * 1.2, // Xoay ngang nhẹ nhàng
-				vy: 1 + Math.random() * 2, // Tốc độ rơi nhẹ nhàng
-				size: 8 + Math.random() * 12, // Kích thước nhỏ hơn một chút
+				x: Math.random() * w,
+				y: -20 - Math.random() * 100,
+				vx: (Math.random() - 0.5) * 1.2,
+				vy: 1 + Math.random() * 2,
+				size: 8 + Math.random() * 12,
 				rot: Math.random() * Math.PI * 2,
-				vr: (Math.random() - 0.5) * 0.15, // Xoay chậm hơn
+				vr: (Math.random() - 0.5) * 0.15,
 				color: colors[Math.floor(Math.random() * colors.length)],
 				shape: Math.random() < 0.35 ? 'rect' : (Math.random() < 0.7 ? 'tri' : 'circle'),
 				opacity: 0.8 + Math.random() * 0.2
@@ -523,10 +503,10 @@
 		}
 		
 		let running = true;
-		const gravity = 0.08; // Trọng lực nhẹ
-		const drag = 0.998; // Ma sát nhẹ
+		const gravity = 0.08;
+		const drag = 0.998;
 		const startTime = performance.now();
-		const duration = 4000; // Giảm thời gian xuống 4 giây
+		const duration = 4000;
 		
 		function step(now) {
 			const elapsed = now - startTime;
@@ -536,8 +516,7 @@
 				return;
 			}
 			
-			// Fade out dần ở cuối
-			const fadeStart = duration * 0.7; // Bắt đầu fade ở 70% thời gian
+			const fadeStart = duration * 0.7;
 			let fadeAlpha = 1;
 			if (elapsed > fadeStart) {
 				fadeAlpha = 1 - ((elapsed - fadeStart) / (duration - fadeStart));
@@ -546,14 +525,12 @@
 			fullscreenConfettiCtx.clearRect(0, 0, w, h);
 			
 			for (const p of particles) {
-				// Cập nhật vị trí
 				p.vx *= drag;
-				p.vy = p.vy * drag + gravity; // Rơi xuống nhẹ nhàng
+				p.vy = p.vy * drag + gravity;
 				p.x += p.vx;
 				p.y += p.vy;
 				p.rot += p.vr;
 				
-				// Reset nếu rơi ra ngoài màn hình dưới
 				if (p.y > h + 50) {
 					p.y = -20 - Math.random() * 50;
 					p.x = Math.random() * w;
@@ -561,7 +538,6 @@
 					p.vy = 1 + Math.random() * 2;
 				}
 				
-				// Chỉ vẽ nếu trong màn hình
 				if (p.x < -50 || p.x > w + 50 || p.y < -50) continue;
 				
 				fullscreenConfettiCtx.save();
@@ -580,7 +556,6 @@
 					fullscreenConfettiCtx.closePath();
 					fullscreenConfettiCtx.fill();
 				} else {
-					// Circle
 					fullscreenConfettiCtx.beginPath();
 					fullscreenConfettiCtx.arc(0, 0, p.size/2, 0, Math.PI * 2);
 					fullscreenConfettiCtx.fill();
